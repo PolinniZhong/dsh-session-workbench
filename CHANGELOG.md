@@ -2,6 +2,24 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-08-24
+
+### Added (v1.1 / snippet-level retrieval)
+
+- **Fragment cards** — search results upgraded from "one row per session" to per-session best-hit fragment cards: the matched sentence highlighted, with a lazy-loaded context window (surrounding events via `readEvent`);
+- **Locate to the message** — click **Locate** on a fragment card to open that session, page the window back to the hit (`open` + `loadOlder`), then scroll to the matching message row and flash-highlight it (best-effort text match; degraded to a non-blocking toast when the hit is out of range or unmatched);
+- **Sort switch** — search results sort by relevance (default) or latest-first.
+
+### Performance
+
+- Persistent SQLite FTS index (`path: '~/.dsh/session-query.sqlite'`, `openAt: startup`) — no more full reconcile on every search;
+- Host 30s TTL cache for identical searches;
+- Recent sessions list and result titles now come from the client-local `sessions.list` snapshot — zero per-session log reads (the 27s slow path is gone).
+
+### Removed
+
+- Dead host endpoints `/session-kb/sessions` and `/session-kb/session/:id` (superseded by the client-local recent list).
+
 ## [0.1.0] - 2026-08-21
 
 ### Added (v1.0 / MVP)
