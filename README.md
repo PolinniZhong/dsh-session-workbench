@@ -50,13 +50,13 @@ dsh plugin --profile web add dsh-session-kb
 
 > Local development can also use a `link:` dependency (same pattern as dsh-personal-center).
 
-**Enable full-text search (required):** the web profile disables the FTS index by default (`openAt: never`). Override it in `<DSH_HOME>/profiles/web/cordis.patch.yml`:
+**Enable full-text search (required):** the web profile disables the FTS index by default (`openAt: never`). Override it in `<DSH_HOME>/profiles/web/cordis.patch.yml` — use a **persistent** index path and `openAt: startup` so the index is built once on launch and reused (a `:memory:` index would rebuild on every search and block the host):
 
 ```yaml
 - id: session-query-sqlite
   config:
-    path: ':memory:'
-    openAt: first-search
+    path: '~/.dsh/session-query.sqlite'
+    openAt: startup
 ```
 
 Then **restart the DSH app** (host-side config and route changes require a restart; client-bundle changes only need a page refresh).
