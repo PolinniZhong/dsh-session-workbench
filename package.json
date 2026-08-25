@@ -1,6 +1,6 @@
 {
   "name": "dsh-session-kb",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Session KB for DeepSeek Harness: full-text search across all past sessions and recall them as @references. 会话库：全文搜索历史会话，一键以 @引用 召回给 AI（session search / recall / knowledge base）.",
   "type": "module",
   "main": "./lib/index.js",

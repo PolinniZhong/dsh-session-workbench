@@ -2,6 +2,21 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-08-25
+
+### Added (v1.2 / same-session hits + reliable locate anchors)
+
+- **Same-session multi-hits** — expanding a fragment card now shows a "More hits in this session (N)" fold with the other matches (first 5 by default, "Load more" via cursor pagination), each with keyword highlighting — no more hunting for the rest of a session's matches;
+- **Composite locate anchors** — Locate now matches the hit sentence *plus* the preceding event text (within the previous 1–3 DOM rows), so repeated text lands on the right occurrence instead of the earliest one;
+- **Index-building notice** — when a search exceeds ~2.5s (first index build), the loading state explains that the history index is being built instead of an open-ended "Loading…".
+
+### Fixed
+
+- Keyword highlighting was silently broken in expandable context / same-session hits / titles (`<mark>` HTML was escaped as plain text) — now rendered via `dangerouslySetInnerHTML` (escaped first, no XSS);
+- Same-session cache was keyed by session only, so switching search terms could show the previous term's hits — cache now bound to `sessionId:query`;
+- `searchEvents` endpoint now uses the same 30s TTL cache as search (avoids repeated full reconciliation);
+- README install example now uses an **absolute** index path — the platform does not expand `~` (a `~/.dsh/...` path silently writes into the dependency tree, losing the index on upgrade and accumulating a huge WAL that makes searches take minutes).
+
 ## [0.2.0] - 2026-08-24
 
 ### Added (v1.1 / snippet-level retrieval)

@@ -12,7 +12,8 @@ DeepSeek Harness ships with a full-text search engine (SQLite FTS5) and cross-se
 
 - **Search** — full-text search across all your past sessions (all workspaces), with workspace / time-range / archive filters, and cursor pagination;
 - **Fragment hits (v1.1)** — results are per-session best-hit **fragment cards**: the matched sentence highlighted with its surrounding context (lazy-loaded), so you see *the sentence*, not just *which session*;
-- **Locate (v1.1)** — click **Locate** on a fragment card to open that session, page the window back to the hit, and scroll to the exact message with a flash highlight; when the hit is out of range or unmatched, a non-blocking toast tells you to scroll manually;
+- **Same-session hits (v1.2)** — expanding a fragment card shows a "More hits in this session" fold with the other matches (first 5, then load more), each highlighted — no more hunting for the rest of a session's matches;
+- **Locate (v1.1, composite anchors in v1.2)** — click **Locate** on a fragment card to open that session, page the window back, and scroll to the exact message with a flash highlight; v1.2 matches the hit sentence *plus* its preceding text so repeated wording lands on the right occurrence; when unmatched, a non-blocking toast tells you to scroll manually;
 - **Recall** — pick up to 3 sessions and insert them into the input as reference chips in one click; on send, the platform injects read-only snapshots (`## Referenced sessions`) and the AI answers with your historical context;
 - **Recent** — a minimal recent-sessions list so you can find things fast without searching;
 - **Archives** — search includes **archived sessions by default** (with an "Archived" badge and all / active-only / archived-only filters) — after DSH archives a session it's visible nowhere else, so search is the only way back; the Recent list excludes archived sessions by default;
@@ -55,9 +56,11 @@ dsh plugin --profile web add dsh-session-kb
 ```yaml
 - id: session-query-sqlite
   config:
-    path: '~/.dsh/session-query.sqlite'
+    path: '/Users/<you>/.dsh/session-query.sqlite'
     openAt: startup
 ```
+
+> ⚠️ `path` must be an **absolute path** — the platform resolves it with `path.resolve` and does **not** expand `~` or environment variables. Writing `~/.dsh/...` silently creates the index inside the DSH dependency tree (lost on upgrade, and a large un-checkpointed WAL makes searches take minutes).
 
 Then **restart the DSH app** (host-side config and route changes require a restart; client-bundle changes only need a page refresh).
 
@@ -106,7 +109,8 @@ See the [design document](../会话知识库插件-设计文档.md) and [DESIGN.
 
 ## Roadmap
 
-- **v1.1 (current)** — snippet-level retrieval: fragment cards (hit sentence + context) + locate-to-message + search/recent performance fixes;
+- **v1.2 (current)** — same-session multi-hits (fold + load more) + composite locate anchors + index-build notice;
+- **v1.1** — snippet-level retrieval: fragment cards (hit sentence + context) + locate-to-message + search/recent performance fixes;
 - **v1.0** — search + recall + settings + recent sessions + archive support (P0);
 - **v2.0** — bookmarks / notes / tags + cost integration + long-session handoff index (FR-HANDOFF);
 - **v3.0** — backlinks + reference graph + related sessions.
@@ -123,8 +127,9 @@ MIT
 
 - 搜索使用官方本地 SQLite FTS5 索引（`ctx.sessionQuery`）——**零网络请求，纯本地**；
 - **v1.1 片段级检索**：结果升级为「片段卡片」（命中句高亮 + 前后文），点「定位」直接打开旧会话、翻到命中位置并滚动到那条消息（高亮 2s）；
+- **v1.2 同会话多片段**：展开片段卡片可查看同会话其余命中（前 5 条 + 加载更多，均带关键词高亮）；定位升级为「命中句 + 前文」组合锚点，重复文本时定位更准；
 - 召回走官方会话引用机制（`@[label](dsh-session:…)` → `## Referenced sessions`）；
 - 归档：搜索默认包含已归档会话（带「已归档」徽标 + 全部/仅未归档/仅归档筛选）；最近列表默认排除归档；
 - v1.0（P0）：搜索 + 召回 + 设置 + 最近会话 + 归档支持。
 
-**关键词**：`dsh-plugin` · `deepseek-harness` · `session-search` · `snippet-level` · `locate` · `knowledge-base` · `recall` · 会话 · 检索 · 片段 · 定位 · 召回 · 知识库
+**关键词**：`dsh-plugin` · `deepseek-harness` · `session-search` · `snippet-level` · `same-session` · `locate` · `knowledge-base` · `recall` · 会话 · 检索 · 片段 · 同会话 · 定位 · 召回 · 知识库
