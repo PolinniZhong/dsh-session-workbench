@@ -56,6 +56,11 @@ The UI is deliberately **native-feeling**: every color, spacing, radius, font, a
 
 > High-res `.mp4` versions live in [docs/videos/](docs/videos/).
 
+## Requirements
+
+- DeepSeek Harness (`dsh`) with a **web** profile — the plugin is a static bundle (its client is served at runtime; a page refresh picks up client changes, host/profile changes need a restart).
+- For session-library search, a **persistent FTS index** must be enabled in the web profile (`openAt: startup`), see [Install](#install).
+
 ## Install
 
 ```sh
