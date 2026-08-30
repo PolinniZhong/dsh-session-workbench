@@ -48,11 +48,13 @@ The UI is deliberately **native-feeling**: every color, spacing, radius, font, a
 
 **Conversation views — reorder in Settings** (drag the ⋮⋮ handle):
 
-<video src="docs/videos/session-views-settings-drag.mp4" controls muted playsinline style="max-width:100%;border-radius:8px"></video>
+![会话视图-设置页拖拽排序](docs/videos/session-views-settings-drag.gif)
 
 **Conversation views — reorder from the tab-bar panel** (right-click / double-click a tab):
 
-<video src="docs/videos/session-views-panel-drag.mp4" controls muted playsinline style="max-width:100%;border-radius:8px"></video>
+![会话视图-面板拖拽排序](docs/videos/session-views-panel-drag.gif)
+
+> High-res `.mp4` versions live in [docs/videos/](docs/videos/).
 
 ## Install
 
