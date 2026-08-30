@@ -75,7 +75,7 @@
 
 - All `--dsw-alias-*` tokens are redefined by the design system under `body[data-ds-dark-theme]` — **no manual dark overrides**;
 - Icons use `currentColor` and adapt automatically;
-- Hit-highlight `mark` uses `#ffe58f` (light emphasis, same as personal-center / prototype).
+- Hit-highlight `mark` uses `#ffe58f` (light emphasis, same as personal-center).
 
 ## 8. Motion
 
@@ -98,6 +98,5 @@
 
 ## 10. Related docs
 
-- Interaction prototype: `../00_从会话库迭代成会话工作台/session-views-manager-demo.html`
 - Implementation design: `docs/DESIGN.md`
 - Platform notes: `../docs/PLATFORM-NOTES.md`

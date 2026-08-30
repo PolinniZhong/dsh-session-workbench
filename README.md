@@ -24,7 +24,7 @@ Everything runs **fully locally with zero network requests**; only session metad
 
 The UI is deliberately **native-feeling**: every color, spacing, radius, font, and interaction (header row, inline search, grouped menu, pill buttons, checkboxes) is measured from DSH's own design system — better-sidebar, the workspace sidebar, and the settings sections — so the plugin looks and behaves like a built-in feature, not a third-party skin.
 
-**Why this plugin (differentiation):** ecosystem search plugins stop at "which session"; in-session navigation plugins (10+) only jump *within the current session*. Session KB is the only plugin that closes the loop **cross-session search → snippet-level hit → locate the exact message in the old session → `@recall`** — see [competitive analysis](docs/competitive-v1.1.md).
+**Why this plugin (differentiation):** ecosystem search plugins stop at "which session"; in-session navigation plugins (10+) only jump *within the current session*. Session KB is the only plugin that closes the loop **cross-session search → snippet-level hit → locate the exact message in the old session → `@recall`**.
 
 ## Screenshots
 
@@ -124,7 +124,7 @@ dsh-session-workbench/
 └── README.md
 ```
 
-See the [design document](../会话知识库插件-设计文档.md) and [DESIGN.md](docs/DESIGN.md) for architecture; platform notes in [PLATFORM-NOTES.md](../docs/PLATFORM-NOTES.md); v2.0+ plans (bookmarks / cost / handoff index) in the [v2.0 PRD](../会话知识库插件-v2.0-PRD.md).
+See [DESIGN.md](docs/DESIGN.md) for implementation; platform notes in [PLATFORM-NOTES.md](../docs/PLATFORM-NOTES.md).
 
 ## Roadmap
 

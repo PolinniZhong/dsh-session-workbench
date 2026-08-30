@@ -121,6 +121,6 @@ Implementation notes:
 ## 6. Related docs
 
 - Visual spec: `docs/DESIGN-SYSTEM.md`
-- Product scope: `../会话工作台-PRD.md` (merged); 会话库历史 `../会话知识库插件-v1.0-PRD.md`
+- Product scope: `../会话工作台-PRD.md`; technical design `../会话工作台-SDD.md`
 - Technical design: `../会话工作台-SDD.md`
 - Platform notes: `../docs/PLATFORM-NOTES.md`
