@@ -54,5 +54,13 @@
     "标签栏",
     "视图管理"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PolinniZhong/dsh-session-workbench.git"
+  },
+  "homepage": "https://github.com/PolinniZhong/dsh-session-workbench",
+  "bugs": {
+    "url": "https://github.com/PolinniZhong/dsh-session-workbench/issues"
+  },
   "license": "MIT"
 }
