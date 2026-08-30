@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-08-30
+
+> 更名 + 合并首发：从「会话库 dsh-session-kb」升级为「会话工作台 dsh-session-workbench」——一个插件、三个入口（侧边栏·会话库 / 设置·会话库 / 设置·会话视图）。版本号从 0.3.0 跳到 1.0.0，标记形态变化（合并）而非功能增量。
+
+### Added
+
+- **会话视图（设置页）** — 新增「设置 → 会话视图」子页：枚举 `conversation.view` 已挂载视图，每个视图提供「显示/隐藏」开关 + `⋮⋮` 把手拖拽排序（HTML5 DnD；隐藏视图不可拖、排在显示之后，按隐藏时间序）；
+- **会话视图（标签条面板）** — 右键/双击会话标签条弹出「会话视图」面板：开关 + 拖拽排序，与设置页同款交互；被拖项半透明幽灵、落点行品牌色虚线描边（pointer + transform 实现，可靠不抖动）；
+- 包名/显示名/描述统一为「会话工作台 dsh-session-workbench」，描述与检索词同时埋「会话库 + 会话视图」双关键词。
+
+### Changed
+
+- 包 `dsh-session-kb` → `dsh-session-workbench`；cordis 插件行 `session-kb` → `session-workbench`；
+- 会话视图隐藏/排序走 **DOM 层**（不改其它视图插件源码）：`ctx.slots.entries('conversation.view')` 枚举 + `style.order` 视觉排序 + `display:none` 隐藏 + MutationObserver 重放；
+- 会话库既有功能（搜索 / 片段命中 / 定位 / 召回 / 归档）保持不变，回归通过。
+
+### Fixed
+
+- 标签条直接拖拽不可靠（React 拥有 `tablist`，DOM 重排会被复位）→ 放弃标签条直拖，排序收敛到「面板 + 设置页」两处。
+
 ## [0.3.0] - 2026-08-25
 
 ### Added (v1.2 / same-session hits + reliable locate anchors)

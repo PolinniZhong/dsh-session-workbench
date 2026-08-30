@@ -1,6 +1,6 @@
 # Privacy
 
-`dsh-session-kb` (Session KB) is a **local-only** DeepSeek Harness plugin: it full-text searches your own past sessions and lets you recall selected sessions to the AI as `@references`. All data processing happens on your own device — **nothing is uploaded to any third-party server**.
+`dsh-session-workbench` (Session Workbench) is a **local-only** DeepSeek Harness plugin with two parts: **会话库** full-text searches your own past sessions and lets you recall selected sessions to the AI as `@references`; **会话视图** manages the conversation-view tab bar (show/hide + reorder). All data processing happens on your own device — **nothing is uploaded to any third-party server**.
 
 ## Data read & search
 
@@ -16,7 +16,7 @@
 
 ## Settings
 
-- Settings (enable switch / default search scope) are stored **locally** in `settings.yaml` (`<DSH_HOME>/settings.yaml`, namespace `session-kb`), read/written by the host loopback route.
+- Settings are stored **locally** in `settings.yaml` (`<DSH_HOME>/settings.yaml`, namespace `session-kb`), read/written by the host loopback route: 会话库 preferences (enable switch / default search scope) and 会话视图 preferences (which views are hidden + their order).
 
 ## No network / no collection
 

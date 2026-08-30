@@ -1,20 +1,20 @@
-# dsh-session-kb — Implementation Design
+# dsh-session-workbench — Implementation Design
 
-> Version: v1.0 ｜ Updated: 2026-08-21 ｜ Status: in sync with the code (lib/index.js + lib/client.js)
-> Developer-facing implementation notes; product scope in the v1.0 PRD, visual spec in DESIGN-SYSTEM.md.
+> Version: 1.0.0 ｜ Updated: 2026-08-30 ｜ Status: in sync with the code (lib/index.js + lib/client.js)
+> Developer-facing implementation notes; product scope in the 会话工作台 PRD/SDD, visual spec in DESIGN-SYSTEM.md.
 
 ## 1. Package layout
 
 ```
-dsh-session-kb/
-├── package.json          # name=dsh-session-kb; dsh.bundle.patch=cordis.patch.yml;
+dsh-session-workbench/
+├── package.json          # name=dsh-session-workbench; dsh.bundle.patch=cordis.patch.yml;
 │                         # dsh.client.platform=web; exports["./client"]
-├── cordis.patch.yml      # plugin row (insert: session-kb)
+├── cordis.patch.yml      # plugin row (insert: session-workbench)
 ├── lib/
-│   ├── index.js          # host: loopback routes /session-kb/* + settings namespace
-│   └── client.js         # client: better-sidebar tab + settings section (zh/en)
+│   ├── index.js          # host: loopback routes /session-kb/* + settings namespace (session-kb, incl. views)
+│   └── client.js         # client: better-sidebar tab + settings entry (会话库/会话视图) + tab-bar view panel
 ├── docs/                 # DESIGN-SYSTEM.md (visual) / DESIGN.md (this file)
-├── README.md / PRIVACY.md
+├── README.md / PRIVACY.md / CHANGELOG.md
 ```
 
 ## 2. Host (lib/index.js)
@@ -24,9 +24,8 @@ dsh-session-kb/
 | Route | Method | Params | Description |
 |---|---|---|---|
 | `/session-kb/search` | GET | `q, ws, from, to, archived, limit, cursor` | FTS search; archive filtering applied at the result layer |
-| `/session-kb/sessions` | GET | `ws, archived, limit, offset` | Recent sessions (archived excluded by default) |
-| `/session-kb/session/:id` | GET | — | Session detail (title/cwd/time/duration/event count) |
-| `/session-kb/settings` | GET/POST | `{enabled, scope}` | Settings read/write (`settingsNamespace("session-kb")`) |
+| `/session-kb/context` | GET | `sessionId, seq` | Read the surrounding event window (≤50) for a fragment hit |
+| `/session-kb/settings` | GET/POST | `{enabled, scope, views}` | Settings read/write (`settingsNamespace("session-kb")`) |
 
 Every route first checks `isLoopback(req.socket.remoteAddress)` — non-loopback requests get 403.
 
@@ -58,8 +57,9 @@ On the platform side (dsh-client-ui-conversation), the scoped ctx listens for `s
 
 ### 2.4 Settings
 
-- Namespace `session-kb`: `{ enabled: boolean, scope: "all"|"current" }`;
+- Namespace `session-kb`: `{ enabled: boolean, scope: "all"|"current", views: {hidden:string[], order:string[]} }`;
 - Read/write via the loopback route (bypasses the web settings whitelist, goes straight to `ctx.settings`);
+- `views` uses `.default({hidden:[],order:[]})` — **schemastery has no `.optional()`**;
 - The client tab is **always registered**: when `enabled=false` the tab shows an internal disabled notice — the switch only controls feature availability.
 
 ## 3. Client (lib/client.js)
@@ -67,7 +67,10 @@ On the platform side (dsh-client-ui-conversation), the scoped ctx listens for `s
 ### 3.1 Component structure
 
 - `SessionKbTab` — the better-sidebar tab panel (header row + list + picked bar);
-- `SettingsSection` — settings section (card + right-side switch + click-to-expand);
+- `SettingsSection` — 会话库 partition (card + right-side switch + click-to-expand);
+- `SessionViewsManager` — 会话视图 partition (switch + HTML5 DnD reorder);
+- `SessionWorkbenchSettings` — single settings entry stacking the two partitions above;
+- `showViewMenu` — tab-bar popover panel (switch + pointer/transform drag);
 - `SessionKbIcon` / `SearchIcon` / `MoreIcon` — outline icons (`currentColor`).
 
 ### 3.2 State & views
@@ -82,6 +85,16 @@ On the platform side (dsh-client-ui-conversation), the scoped ctx listens for `s
 
 - `inject: ["slots", "locale"]` (betterSidebar is optional — read via `ctx.get`, guard for undefined);
 - Client bundle injects: `dsh-client-runtime / dsh-client-locale / dsh-client-ui-slots / dsh-client-ui-conversation`.
+
+### 3.4 Conversation views (new in 1.0.0)
+
+- `BASE_VIEW_IDS = ['chat','trajectory']` — base views, never listed/managed;
+- `SessionViewsManager` — settings partition: enumerate `ctx.slots.entries('conversation.view')`, filter base views, each custom view = `⋮⋮` drag handle + name + `skb-switch`; reorder via React HTML5 DnD (hidden rows not draggable);
+- `showViewMenu(x,y)` — right-click/double-click the tab bar to open a popover panel with the same switch + drag; drag uses **pointer + transform** (`setPointerCapture` + `translateY` + gap shift), more reliable than HTML5 DnD;
+- `applyViewConfig(config)` — DOM applier: bind `data-view-id`, hide via `display:none`, reorder via **`style.order`** (NOT `insertBefore` — React owns the tablist and resets DOM reordering), `user-select:none` on tabs/panel; replay via MutationObserver;
+- Sort order: visible first (by config `order`), hidden last (by `hidden` array order = hide time);
+- Drag visuals: dragged row `opacity:0.6` + shadow (ghost); target row `1px dashed` brand color + `box-sizing:border-box` (no size shift);
+- Settings entry: single `settings.section` entry (id `session-kb`, order 30) stacking `SettingsSection` + `SessionViewsManager`.
 
 ## 4. Archive semantics (new in v1.0)
 
@@ -102,10 +115,12 @@ Implementation notes:
 3. The FTS cursor is bound to the request fingerprint: changing query/filters/limit → `SESSION_QUERY_STALE_CURSOR`;
 4. An absolutely-positioned `.skb-menu` must not live inside an `overflow:hidden` container (it gets clipped);
 5. The settings switch must not gate tab registration (the entry should always exist);
-6. Don't render the empty state while the initial loading flag isn't set yet (loading takes precedence).
+6. Don't render the empty state while the initial loading flag isn't set yet (loading takes precedence);
+7. Dragging the tab bar directly is unreliable (React owns the `tablist`, DOM reordering gets reset by `useSyncExternalStore`) — reorder via `style.order` instead, and put drag-and-drop in the panel/settings.
 
 ## 6. Related docs
 
 - Visual spec: `docs/DESIGN-SYSTEM.md`
-- Product scope: `../会话知识库插件-v1.0-PRD.md`
+- Product scope: `../会话工作台-PRD.md` (merged); 会话库历史 `../会话知识库插件-v1.0-PRD.md`
+- Technical design: `../会话工作台-SDD.md`
 - Platform notes: `../docs/PLATFORM-NOTES.md`

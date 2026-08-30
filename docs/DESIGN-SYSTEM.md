@@ -1,6 +1,6 @@
-# dsh-session-kb — Design System (DESIGN-SYSTEM)
+# dsh-session-workbench — Design System (DESIGN-SYSTEM)
 
-> Version: v1.0 ｜ Updated: 2026-08-21 ｜ Status: in sync with the implementation
+> Version: 1.0.0 ｜ Updated: 2026-08-30 ｜ Status: in sync with the implementation
 > Every value below is taken from **measured CSS** in better-sidebar 0.13.0, the workspace client, and dsh-personal-center — follow it when changing UI to stay consistent with native DSH.
 
 ## 0. Rules
@@ -83,8 +83,21 @@
 - `prefers-reduced-motion:reduce` disables animations;
 - Self-drawn switch (personal-center DESIGN-SYSTEM §7.2): 36×20, track on = brand blue / off = gray, white 16px knob, `translateX(16px)`.
 
-## 9. Related docs
+## 9. Conversation views (drag visuals, 1.0.0)
 
-- Interaction prototype: `prototype/index.html`
+| Item | Spec |
+|---|---|
+| 视图行（设置分区/面板） | `bg-layer-3` 行、`border-radius:6px`、`padding:5px 6px`；可见行 `opacity:1`、隐藏行 `opacity:.55`（不可拖、`cursor:default`） |
+| 拖拽把手 | `⋮⋮`，`label-tertiary`、`font-size:12px`、`letter-spacing:-1px`、`user-select:none` |
+| 开关 | `skb-switch` + `skb-switch-knob`（同设置页开关：36×20，on=brand blue / off=gray，白 16px 旋钮 `translateX(16px)`） |
+| 被拖行（幽灵） | `opacity:0.6` + `box-shadow:0 8px 22px rgba(0,0,0,.22)` + `z-index:3`，`transition:none`（即时跟手） |
+| 落点行（目标） | `1px dashed var(--dsw-alias-brand-primary)` + `box-sizing:border-box`（零尺寸抖动）；拖回原位即清除 |
+| 让位动画 | 非拖拽行 `transition:transform 120ms ease`，gap 变化才让位（减 DOM 抖动） |
+| 面板容器 | `bg-layer-2`、`border-radius:10px`、`border-l2` 边框、阴影；`max-height≈190px` + `overflow-y:auto`（约 5 行后滚动） |
+| 文本选中 | 标签/面板 `user-select:none`（防「复制/刷新」原生菜单遮挡） |
+
+## 10. Related docs
+
+- Interaction prototype: `../00_从会话库迭代成会话工作台/session-views-manager-demo.html`
 - Implementation design: `docs/DESIGN.md`
-- Platform notes: `会话知识库/docs/PLATFORM-NOTES.md`
+- Platform notes: `../docs/PLATFORM-NOTES.md`

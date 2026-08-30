@@ -1,7 +1,7 @@
 {
-  "name": "dsh-session-kb",
-  "version": "0.3.0",
-  "description": "Session KB for DeepSeek Harness: full-text search across all past sessions and recall them as @references. 会话库：全文搜索历史会话，一键以 @引用 召回给 AI（session search / recall / knowledge base）.",
+  "name": "dsh-session-workbench",
+  "version": "1.0.0",
+  "description": "Session Workbench for DeepSeek Harness: session-library full-text search + recall + conversation-view management. 会话工作台：会话库（全文搜索历史会话，一键以 @引用 召回给 AI）+ 会话视图（管理会话标签栏 显示/隐藏 + 排序）（session search / recall / view management / 会话视图）.",
   "type": "module",
   "main": "./lib/index.js",
   "exports": {
@@ -43,10 +43,16 @@
     "session-search",
     "knowledge-base",
     "recall",
+    "view-management",
+    "conversation-view",
+    "tab-management",
     "会话",
     "检索",
     "召回",
-    "知识库"
+    "知识库",
+    "会话视图",
+    "标签栏",
+    "视图管理"
   ],
   "license": "MIT"
 }

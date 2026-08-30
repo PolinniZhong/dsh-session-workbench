@@ -1,6 +1,6 @@
-# dsh-session-kb — Session KB for DeepSeek Harness
+# dsh-session-workbench — Session Workbench for DeepSeek Harness
 
-> Search every past session and recall the ones you need as `@references` — the AI then answers with your historical context.
+> Search every past session and recall the ones you need as `@references`; manage the conversation-view tab bar (show/hide + reorder). One plugin, three entry points.
 
 [English](#english) · [中文](#中文) · [Privacy](PRIVACY.md) · [Docs](../docs/README.md)
 
@@ -17,7 +17,8 @@ DeepSeek Harness ships with a full-text search engine (SQLite FTS5) and cross-se
 - **Recall** — pick up to 3 sessions and insert them into the input as reference chips in one click; on send, the platform injects read-only snapshots (`## Referenced sessions`) and the AI answers with your historical context;
 - **Recent** — a minimal recent-sessions list so you can find things fast without searching;
 - **Archives** — search includes **archived sessions by default** (with an "Archived" badge and all / active-only / archived-only filters) — after DSH archives a session it's visible nowhere else, so search is the only way back; the Recent list excludes archived sessions by default;
-- **Settings** — enable/disable switch + default search scope + privacy statement.
+- **Settings** — enable/disable switch + default search scope + privacy statement;
+- **Conversation views (new in 1.0.0)** — manage the session tab bar: **show/hide** each custom view and **reorder** them by drag-and-drop, from both the *会话工作台 settings entry (会话视图 partition)* and a *right-click / double-click panel* on the tab bar itself.
 
 Everything runs **fully locally with zero network requests**; only session metadata and hit snippets are read, and no session is ever modified or deleted (see [PRIVACY.md](PRIVACY.md)).
 
@@ -43,10 +44,20 @@ The UI is deliberately **native-feeling**: every color, spacing, radius, font, a
 
 ![Settings](docs/screenshots/设置-会话库.png)
 
+## Videos
+
+**Conversation views — reorder in Settings** (drag the ⋮⋮ handle):
+
+![会话视图-设置页拖拽排序](docs/videos/session-views-settings-drag.mp4)
+
+**Conversation views — reorder from the tab-bar panel** (right-click / double-click a tab):
+
+![会话视图-面板拖拽排序](docs/videos/session-views-panel-drag.mp4)
+
 ## Install
 
 ```sh
-dsh plugin --profile web add dsh-session-kb
+dsh plugin --profile web add dsh-session-workbench
 ```
 
 > Local development can also use a `link:` dependency (same pattern as dsh-personal-center).
@@ -71,7 +82,8 @@ Then **restart the DSH app** (host-side config and route changes require a resta
 3. Click the **more** button (⋯) to filter by workspace / time range / archive (all incl. archived / active only / archived only);
 4. Click a result to expand the preview (hit context + session meta); click **Locate** to open that session and scroll to the exact hit message (flash-highlighted); click the path to expand the full path; then check it (up to 3);
 5. Click **Insert references into input** → `@session` chips appear in the input → continue typing your question → send;
-6. The platform injects read-only snapshots into the model context and the AI answers with your history.
+6. The platform injects read-only snapshots into the model context and the AI answers with your history;
+7. **Manage conversation views** — open *Settings → 会话工作台 → 会话视图* to toggle each view's visibility and drag the ⋮⋮ handle to reorder, or right-click / double-click the session tab bar for the same panel inline.
 
 ## Model Experience
 
@@ -92,15 +104,15 @@ When the user mentions "before / previous session / how did we do X" — anythin
 ## Development
 
 ```text
-dsh-session-kb/
+dsh-session-workbench/
 ├── package.json          # dsh.bundle.patch + dsh.client.platform=web + exports["./client"]
-├── cordis.patch.yml      # plugin row
+├── cordis.patch.yml      # plugin row (session-workbench)
 ├── lib/
 │   ├── index.js          # host: loopback routes /session-kb/* (search/context/settings) + isLoopback + archive
-│   └── client.js         # client: better-sidebar tab + settings section (zh/en)
+│   └── client.js         # client: better-sidebar tab + settings sections (会话库 / 会话视图) + tab-bar view panel (zh/en)
 ├── docs/
-│   ├── DESIGN-SYSTEM.md  # visual/interaction spec (measured values)
-│   └── DESIGN.md         # implementation design (host/client/insert-reference/archive)
+│   ├── DESIGN-SYSTEM.md  # visual/interaction spec (measured values, incl. view drag styles)
+│   └── DESIGN.md         # implementation design (host/client/insert-reference/archive/views)
 ├── PRIVACY.md
 └── README.md
 ```
@@ -109,9 +121,8 @@ See the [design document](../会话知识库插件-设计文档.md) and [DESIGN.
 
 ## Roadmap
 
-- **v1.2 (current)** — same-session multi-hits (fold + load more) + composite locate anchors + index-build notice;
-- **v1.1** — snippet-level retrieval: fragment cards (hit sentence + context) + locate-to-message + search/recent performance fixes;
-- **v1.0** — search + recall + settings + recent sessions + archive support (P0);
+- **1.0.0 (current)** — 会话工作台合并首发：会话库（search → snippet → locate → recall）+ 会话视图（tab bar show/hide + drag reorder）;
+- 会话库历史：v1.2（同会话多片段 + 组合锚点）/ v1.1（片段级检索）/ v1.0（搜索召回）;
 - **v2.0** — bookmarks / notes / tags + cost integration + long-session handoff index (FR-HANDOFF);
 - **v3.0** — backlinks + reference graph + related sessions.
 
@@ -123,13 +134,18 @@ MIT
 
 ## 中文
 
-**会话库（Session KB）** 为 DeepSeek Harness 带来「搜索 + 召回」工作流：全文搜索你的全部历史会话，把最多 3 个会话以 `@引用` 形式插入当前输入框；发送后平台自动注入只读快照，AI 带着你的历史上下文回答。
+**会话工作台（Session Workbench）** = 会话库 + 会话视图，一个插件：
 
-- 搜索使用官方本地 SQLite FTS5 索引（`ctx.sessionQuery`）——**零网络请求，纯本地**；
-- **v1.1 片段级检索**：结果升级为「片段卡片」（命中句高亮 + 前后文），点「定位」直接打开旧会话、翻到命中位置并滚动到那条消息（高亮 2s）；
-- **v1.2 同会话多片段**：展开片段卡片可查看同会话其余命中（前 5 条 + 加载更多，均带关键词高亮）；定位升级为「命中句 + 前文」组合锚点，重复文本时定位更准；
+- **侧边栏·会话库**：全文搜索全部历史会话，把最多 3 个会话以 `@引用` 插入输入框，发送后平台注入只读快照，AI 带着历史上下文回答；
+- **设置·会话工作台**（一个条目，内含两个分区）：「会话库」分区（启用开关 + 搜索默认范围 + 隐私说明）+「会话视图」分区（每个视图「显示/隐藏」开关 + `⋮⋮` 拖拽排序）；
+- **标签条右键/双击面板**：快捷管理会话视图（同款开关 + 拖拽排序）。
+
+会话库要点（继承自 dsh-session-kb）：
+
+- 搜索用官方本地 SQLite FTS5 索引（`ctx.sessionQuery`）——**零网络请求，纯本地**；
+- **片段级检索**：结果升级为「片段卡片」（命中句高亮 + 前后文），点「定位」打开旧会话、翻到命中位置并滚动到那条消息（高亮 2s）；
+- **同会话多片段**：展开片段卡片查看同会话其余命中（前 5 条 + 加载更多，均带关键词高亮）；定位用「命中句 + 前文」组合锚点；
 - 召回走官方会话引用机制（`@[label](dsh-session:…)` → `## Referenced sessions`）；
-- 归档：搜索默认包含已归档会话（带「已归档」徽标 + 全部/仅未归档/仅归档筛选）；最近列表默认排除归档；
-- v1.0（P0）：搜索 + 召回 + 设置 + 最近会话 + 归档支持。
+- 归档：搜索默认包含已归档会话（带「已归档」徽标 + 全部/仅未归档/仅归档筛选）；最近列表默认排除归档。
 
-**关键词**：`dsh-plugin` · `deepseek-harness` · `session-search` · `snippet-level` · `same-session` · `locate` · `knowledge-base` · `recall` · 会话 · 检索 · 片段 · 同会话 · 定位 · 召回 · 知识库
+**关键词**：`dsh-plugin` · `deepseek-harness` · `session-search` · `knowledge-base` · `recall` · `view-management` · `conversation-view` · 会话 · 检索 · 召回 · 知识库 · 会话视图 · 标签栏 · 视图管理
