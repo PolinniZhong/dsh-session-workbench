@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-09-05
+
+> 兼容性修复：适配 DSH 0.1.1-rc.2 的 client 模块重组。无新功能，行为不变。
+
+### Fixed
+
+- **DSH 0.1.1-rc.2 compatibility** — removed `@deepseek-ai/dsh-client-ui-slots` from `dsh.client.inject`: the module no longer ships separately in rc.2 (its API merged into `dsh-client-ui-conversation`, and `ctx.slots` is now provided by `dsh-client-runtime`). The stale inject made the client bundle fail to ready (`HARNESS_NOT_READY: ... (0/2 ready)`) and block the app from starting; inject is now `[dsh-client-runtime, dsh-client-locale, dsh-client-ui-conversation]`.
+
 ## [1.0.0] - 2026-08-30
 
 > 更名 + 合并首发：从「会话库 dsh-session-kb」升级为「会话工作台 dsh-session-workbench」——一个插件、三个入口（侧边栏·会话库 / 设置·会话库 / 设置·会话视图）。版本号从 0.3.0 跳到 1.0.0，标记形态变化（合并）而非功能增量。
