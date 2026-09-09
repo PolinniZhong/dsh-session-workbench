@@ -2,6 +2,15 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2026-09-07
+
+> 修复：会话视图的隐藏/排序不再误伤设置弹层内其它插件的同数量 tab 条（曾致 dsh-personal-center 设置页「外观/宠物」两个 tab 被隐藏）。
+
+### Fixed
+
+- **作用域限定会话视图标签条** — `applyViewConfig` 原遍历全文档所有 `[role=tablist]`，凡 tab 数量等于会话视图数即按位置映射绑定 `data-view-id` 并应用「隐藏/排序」。设置弹层内其它插件页面若有同数量 tab 条（如 dsh-personal-center 的 4 个 tab 对 4 个会话视图），会被当作会话视图条，按位置绑到已隐藏视图的 tab 被 `display:none` 隐藏。现新增 `isConversationViewTablist` 守卫：跳过位于覆盖层/对话框内的 tablist；右键菜单取标签条同样改为取「会话工作区内第一个合格 tablist」，不再取全文档第一个。
+- **守卫改为类名无关的祖先判定** — 覆盖层根类随 dsh 壳改版更名（`.dsh-tu-settingsRoot` → `.dshp-settings-sidebar`），固定类名名单会失效导致误伤复发；现改为「任一祖先类名含 `settings` 即视为设置弹层内容」的判定，配合 `[role=dialog]` / `[aria-modal=true]`，不依赖具体类名。
+
 ## [1.0.1] - 2026-09-05
 
 > 兼容性修复：适配 DSH 0.1.1-rc.2 的 client 模块重组。无新功能，行为不变。
