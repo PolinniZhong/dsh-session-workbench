@@ -10,6 +10,7 @@ All notable changes to this project are documented here. The format follows [Kee
 - **自绘设置页声明** — `settings.configure({ auto: false }, ctx.fiber)`,避免宿主再生成一份自动表单。
 - **归档 storages 路径修正** — 0.1.7 起 `settings.documentPath` 指向 profile 补丁(旧版为 `<dshHome>/settings.yaml`),`storages/workspace.json` 改为多候选探测,归档过滤不再读错路径。
 - **client inject 清理** — 移除新版已不存在的 `@deepseek-ai/dsh-client-runtime`;依赖移除不再使用的 `@deepseek-ai/dsh-settings`。
+- **会话打开/定位适配** — 改用 `ctx.uiWorkspace.openSession`（≤0.1.6 回退 `ctx.sessions.open`），修复 0.1.7 下「打开 / 定位」调用已不存在方法的问题。
 - **旧宿主兼容** — `≤0.1.6` 继续走按命名空间注册的旧路径。
 
 ## [1.0.2] - 2026-09-07
