@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2026-09-28
+
+### Compatibility
+
+- **DSH 0.1.7 插件设置 API 适配** — `@deepseek-ai/dsh-settings` 移除了 `settingsNamespace` 导出与 `SettingsService.register/get`;本版新增 `Config`(字段组沿用旧命名空间 `session-kb`,标 `volatile`)并用 `settings.describe/update` 适配层承接既有读写,设置分区行为不变。
+- **自绘设置页声明** — `settings.configure({ auto: false }, ctx.fiber)`,避免宿主再生成一份自动表单。
+- **归档 storages 路径修正** — 0.1.7 起 `settings.documentPath` 指向 profile 补丁(旧版为 `<dshHome>/settings.yaml`),`storages/workspace.json` 改为多候选探测,归档过滤不再读错路径。
+- **client inject 清理** — 移除新版已不存在的 `@deepseek-ai/dsh-client-runtime`;依赖移除不再使用的 `@deepseek-ai/dsh-settings`。
+- **旧宿主兼容** — `≤0.1.6` 继续走按命名空间注册的旧路径。
+
 ## [1.0.2] - 2026-09-07
 
 > 修复：会话视图的隐藏/排序不再误伤设置弹层内其它插件的同数量 tab 条（曾致 dsh-personal-center 设置页「外观/宠物」两个 tab 被隐藏）。

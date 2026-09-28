@@ -128,7 +128,7 @@ See [DESIGN.md](docs/DESIGN.md) for implementation; platform notes in [PLATFORM-
 
 ## Roadmap
 
-- **1.0.2 (current)** — DSH 0.1.2-rc.1 compatibility patch: 会话视图的隐藏/排序不再误伤设置弹层内其它插件的同数量 tab 条（守卫改类名无关，曾致 dsh-personal-center「外观/宠物」tab 被隐藏）; feature baseline unchanged from 1.0.1（会话库 search → snippet → locate → recall + 会话视图 tab bar show/hide + drag reorder）;
+- **1.0.3 (current)** — DSH 0.1.7 compatibility patch: 插件设置 API 换模型（`Config` schema + `describe/update` 适配）、归档 storages 路径修正、client inject 清理；保留 ≤0.1.6 旧路径。feature baseline unchanged from 1.0.2（会话库 search → snippet → locate → recall + 会话视图 tab bar show/hide + drag reorder）;
 - 会话库历史：v1.2（同会话多片段 + 组合锚点）/ v1.1（片段级检索）/ v1.0（搜索召回）;
 - **v2.0** — bookmarks / notes / tags + cost integration + long-session handoff index (FR-HANDOFF);
 - **v3.0** — backlinks + reference graph + related sessions.
